@@ -76,7 +76,6 @@ class Cafe(Card):
     reward = 1
     cost = 2
     quantity = 6
-
     def get_reward(self):
         return self.reward
 
@@ -119,19 +118,19 @@ class RadioTower(Card):
     public_card = False
 
 
-buildings = [Farm(), Ranch(), Bakery(), Cafe(), ConvenienceStore()]
 
 
-class Player():
-    def __init__(self, strat=1):
+
+class Player:
+    def __init__(self, game, strat=1):
+        self.game = game
         self.money = 4
         self.my_b = []
         self.strat = strat
         self.landmarks = {"Station": False, "Shopping Mall": False, "Amusement Park": False, "Radio Tower": False}
 
     def has_won(self):
-        print(self.landmarks)
-        print(not False in self.landmarks.values())
+
         return not False in self.landmarks.values()
 
     def get_reward(self, roll, is_turn):
@@ -147,25 +146,26 @@ class Player():
     def cafe_steal(self):
         pass
 
+
     def choose_buy(self):
         if self.strat == 0:
-            print(get_remain())
-            print(self.money)
-            print(self.my_b)
+            print(self.game.get_name_remain())
+            print("You have $"+str(self.money))
+            print("Your buildings:",self.my_b)
             choice = input("choose a building")
 
             a = int(choice)
-            building = buildings[a].buy()
+            building = game.buildList[a].buy()
             print("Human built ", building.name)
             self.my_b.append(building)
 
         if self.strat == 1:
             if self.money >= 1:
-                self.my_b.append(buildings[1].buy())
+                self.my_b.append(game.buildList[1].buy())
                 print('Strat 1 built a ranch')
         if self.strat == 2:
             if self.money >= 2:
-                self.my_b.append(buildings[4].buy())
+                self.my_b.append(game.buildList[4].buy())
                 print('Strat 2 built a convenience store')
 
     def tv_steal(self):
@@ -181,8 +181,7 @@ class Player():
         return True
 
 
-def get_remain():
-    return [b.quantity for b in buildings]
+
 
 
 def roll1():
@@ -196,13 +195,17 @@ def roll2():
 
 
 class Game():
+
+
+
     def __init__(self, players=None):
+        self.buildList = [Farm(), Ranch(), Bakery(), Cafe(), ConvenienceStore()]
+        self.buildDict = {b.name:b for b in self.buildList}
         if players:
             self.players = players
         else:
-            self.players = [Player(0), Player(1), Player(2)]
+            self.players = [Player(self, 0), Player(self, 1), Player(self, 2)]
 
-        curr_player = 0
 
     def play_game(self):
         game_over = False
@@ -246,18 +249,13 @@ class Game():
         for p in self.players:
             p.get_reward(roll, p == player)
 
+    def get_remain(self):
+        return [b.quantity for b in self.buildList]
+
+    def get_name_remain(self):
+        return [b.name+" "+str(b.quantity) for b in self.buildList]
+
 game = Game()
 game.play_game()
 print("Done")
 
-
-# players = [Player(0), Player(1), Player(2)]
-# for i in range(5):
-#     for player in players:
-#         roll = roll1()
-#         for player2 in players:
-#             player2.get_reward(roll, player == player2)
-#         player.choose_buy()
-#
-# for player in players:
-#     print(player.money)
