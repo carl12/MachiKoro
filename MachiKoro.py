@@ -130,7 +130,6 @@ class Player:
         self.landmarks = {"Station": False, "Shopping Mall": False, "Amusement Park": False, "Radio Tower": False}
 
     def has_won(self):
-
         return not False in self.landmarks.values()
 
     def get_reward(self, roll, is_turn):
@@ -143,30 +142,52 @@ class Player:
                     self.money += reward
         return self.money
 
+    def buy(self, num):
+        pending = self.game.buildList[num]
+        if pending:
+            pending.buy()
+            self.money -= pending.cost
+            return pending
+
+    def print_remain(self):
+        for b in self.game.buildList:
+            print(b.name,str(b.quantity),", ",end="")
+        print()
+        print(self.landmarks)
+
+    def buy_name(self, name):
+        return None
+
     def cafe_steal(self):
         pass
 
-
     def choose_buy(self):
         if self.strat == 0:
-            print(self.game.get_name_remain())
+            self.print_remain()
             print("You have $"+str(self.money))
             print("Your buildings:",self.my_b)
             choice = input("choose a building")
 
             a = int(choice)
-            building = game.buildList[a].buy()
-            print("Human built ", building.name)
-            self.my_b.append(building)
+            building = self.buy(a)
+            if building:
+                print("Human built ", building.name)
+                self.my_b.append(building)
+            else:
+                print("Nothing bought")
 
         if self.strat == 1:
             if self.money >= 1:
-                self.my_b.append(game.buildList[1].buy())
-                print('Strat 1 built a ranch')
+                build = self.buy(1)
+                if build:
+                    self.my_b.append(build)
+                    print('Strat 1 built a ranch')
         if self.strat == 2:
             if self.money >= 2:
-                self.my_b.append(game.buildList[4].buy())
-                print('Strat 2 built a convenience store')
+                build = self.buy(4)
+                if build:
+                    self.my_b.append(build)
+                    print('Strat 2 built a Convenience Store')
 
     def tv_steal(self):
         pass
@@ -184,6 +205,7 @@ class Player:
 
 
 
+
 def roll1():
     return random.randrange(5) + 1
 
@@ -195,9 +217,6 @@ def roll2():
 
 
 class Game():
-
-
-
     def __init__(self, players=None):
         self.buildList = [Farm(), Ranch(), Bakery(), Cafe(), ConvenienceStore()]
         self.buildDict = {b.name:b for b in self.buildList}
