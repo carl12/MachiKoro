@@ -81,6 +81,9 @@ class Cafe(Card):
 
 
 class ConvenienceStore(Card):
+    def __repr__(self):
+        return self.name
+
     name = "Convenience Store"
     trigger = [4]
     on_turn = True
@@ -127,7 +130,11 @@ class Player:
         self.money = 4
         self.my_b = []
         self.strat = strat
-        self.landmarks = {"Station": False, "Shopping Mall": False, "Amusement Park": False, "Radio Tower": False}
+
+        #TODO - update landmarks to actual objects
+        self.landmark_names = ["Station", "Shopping Mall", "Amusement Park", "Radio Tower"]
+        self.landmark = [False, False, False, False]
+        self.landmark_costs = [4,10,16,26]
 
     def has_won(self):
         return not False in self.landmarks.values()
@@ -143,9 +150,14 @@ class Player:
         return self.money
 
     def buy(self, num):
-        pending = self.game.buildList[num]
-        if pending:
-            pending.buy()
+        if num < 0:
+            num = -num
+            if not self.landmarks[num] and self.money >= self.landmark_costs[num]:
+                self.landmarks[num] = True
+                self.money -= self.landmark_costs[num]
+
+        pending = self.game.take(num)
+        if pending and pending.cost <= self.money:
             self.money -= pending.cost
             return pending
 
@@ -263,6 +275,11 @@ class Game():
         else:
             self.give_rewards(roll, p)
             return doubles
+
+    def take(self, loc):
+        return self.buildList[loc].buy()
+
+
 
     def give_rewards(self, roll, player):
         for p in self.players:
