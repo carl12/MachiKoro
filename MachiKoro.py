@@ -37,6 +37,9 @@ class Card:
     def get_reward(self):
         return self.reward
 
+    def __repr__(self):
+        return self.name
+
 
 class Farm(Card):
     name = "Farm"
@@ -81,8 +84,6 @@ class Cafe(Card):
 
 
 class ConvenienceStore(Card):
-    def __repr__(self):
-        return self.name
 
     name = "Convenience Store"
     trigger = [4]
@@ -218,10 +219,6 @@ class Player:
 
     def reroll(self, total, doubles = False):
         return True
-
-
-
-
 
 
 def roll1():
