@@ -29,12 +29,12 @@ class Card:
             self.remain = self.remain - 1
             return self
 
-    def check(self, roll, is_turn):
+    def check(self, roll, is_turn, boosts = None):
         if (is_turn and self.on_turn) or (not is_turn and self.off_turn):
             if roll in self.trigger:
-                return self.get_reward()
+                return self.get_reward(boosts)
 
-    def get_reward(self):
+    def get_reward(self, boosts = None):
         return self.reward
 
     def __repr__(self):
@@ -61,7 +61,15 @@ class Ranch(Card):
     remain = 6
 
 
-class Bakery(Card):
+class FoodShop(Card):
+    shopMBonus = 1
+    def get_reward(self, boosts = None):
+        if boosts and boosts.get("Shopping Mall"):
+            return self.reward + self.shopMBonus
+        else: return self.reward
+
+
+class Bakery(FoodShop):
     name = "Bakery"
     trigger = [2, 3]
     on_turn = True
@@ -71,7 +79,7 @@ class Bakery(Card):
     remain = 6
 
 
-class Cafe(Card):
+class Cafe(FoodShop):
     name = "Cafe"
     trigger = [3]
     on_turn = False
@@ -79,11 +87,10 @@ class Cafe(Card):
     reward = 1
     cost = 2
     remain = 6
-    def get_reward(self):
-        return self.reward
 
 
-class ConvenienceStore(Card):
+
+class ConvenienceStore(FoodShop):
 
     name = "Convenience Store"
     trigger = [4]
@@ -157,7 +164,7 @@ class Player:
 
     def buy(self, num):
         if num < 0:
-            num = -num
+            num = -num + -1
             if not self.landmarks[num].owned and self.money >= self.landmarks[num].cost:
                 pending = self.landmarks[num]
                 self.money -= pending.cost
