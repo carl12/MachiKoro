@@ -21,12 +21,12 @@ class Card:
     off_turn = False
     reward = 0
     cost = 0
-    quantity = 10
+    remain = 10
     public_card = True
 
     def buy(self):
-        if self.quantity > 0:
-            self.quantity = self.quantity - 1
+        if self.remain > 0:
+            self.remain = self.remain - 1
             return self
 
     def check(self, roll, is_turn):
@@ -45,7 +45,7 @@ class Farm(Card):
     off_turn = True
     reward = 1
     cost = 1
-    quantity = 6
+    remain = 6
 
 
 class Ranch(Card):
@@ -55,7 +55,7 @@ class Ranch(Card):
     off_turn = True
     reward = 1
     cost = 1
-    quantity = 6
+    remain = 6
 
 
 class Bakery(Card):
@@ -65,7 +65,7 @@ class Bakery(Card):
     off_turn = False
     reward = 1
     cost = 1
-    quantity = 6
+    remain = 6
 
 
 class Cafe(Card):
@@ -75,7 +75,7 @@ class Cafe(Card):
     off_turn = True
     reward = 1
     cost = 2
-    quantity = 6
+    remain = 6
     def get_reward(self):
         return self.reward
 
@@ -90,72 +90,78 @@ class ConvenienceStore(Card):
     off_turn = True
     reward = 3
     cost = 2
-    quantity = 6
+    remain = 6
 
+class LandmarkCard(Card):
+    owned = False
+    def buy(self):
+        if self.remain > 0:
+            self.remain = self.remain - 1
+            self.owned=True
+            return self
 
-class Station(Card):
+class Station(LandmarkCard):
     name = "Station"
     cost = 4
-    quantity = 1
+    remain = 1
     public_card = False
 
 
-class ShoppingMall(Card):
+class ShoppingMall(LandmarkCard):
     name = "Shopping Mall"
     cost = 10
-    quantity = 1
+    remain = 1
     public_card = False
 
 
-class AmusementPark(Card):
+class AmusementPark(LandmarkCard):
     name = "Amusement Park"
     cost = 10
-    quantity = 1
+    remain = 1
     public_card = False
 
 
-class RadioTower(Card):
+class RadioTower(LandmarkCard):
     name = "Radio Tower"
     cost = 10
-    quantity = 1
+    remain = 1
     public_card = False
-
-
 
 
 
 class Player:
-    def __init__(self, game, strat=1):
+    def __init__(self, game, strat=1, name = None):
         self.game = game
         self.money = 4
         self.my_b = []
         self.strat = strat
 
-        #TODO - update landmarks to actual objects
-        self.landmark_names = ["Station", "Shopping Mall", "Amusement Park", "Radio Tower"]
-        self.landmark = [False, False, False, False]
-        self.landmark_costs = [4,10,16,26]
+        self.name = name if name else strat
+
+
+        self.landmarks = [Station(), ShoppingMall(), AmusementPark(), RadioTower()]
+
 
     def has_won(self):
-        return not False in self.landmarks.values()
+        return not False in [a.owned for a in self.landmarks]
 
     def get_reward(self, roll, is_turn):
-        print(roll, 'is roll')
         for b in self.my_b:
             if b:
                 reward = b.check(roll, is_turn)
                 if reward:
-                    print(reward, 'is reward')
+                    print('Player:',self.name,'just got',reward)
                     self.money += reward
         return self.money
 
     def buy(self, num):
         if num < 0:
             num = -num
-            if not self.landmarks[num] and self.money >= self.landmark_costs[num]:
-                self.landmarks[num] = True
-                self.money -= self.landmark_costs[num]
-
+            if not self.landmarks[num].owned and self.money >= self.landmarks[num].cost:
+                pending = self.landmarks[num]
+                self.money -= pending.cost
+                return pending.buy()
+            return
         pending = self.game.take(num)
         if pending and pending.cost <= self.money:
             self.money -= pending.cost
@@ -163,7 +169,7 @@ class Player:
 
     def print_remain(self):
         for b in self.game.buildList:
-            print(b.name,str(b.quantity),", ",end="")
+            print(b.name,str(b.remain),", ",end="")
         print()
         print(self.landmarks)
 
@@ -261,7 +267,7 @@ class Game():
     def roll(self, p, used_radio = False):
         extra_turn = False
         doubles = False
-        if p.landmarks['Station']:
+        if not p.landmarks[0].owned:
             if p.roll2():
                 rolls = roll2()
                 roll = rolls[0]
@@ -270,7 +276,7 @@ class Game():
                 roll = roll1()
         else:
             roll = roll1()
-        if not used_radio and p.landmarks["Radio Tower"] and p.reroll(roll,doubles):
+        if not used_radio and p.landmarks[3].owned and p.reroll(roll,doubles):
             return self.roll(p,True)
         else:
             self.give_rewards(roll, p)
@@ -282,14 +288,15 @@ class Game():
 
 
     def give_rewards(self, roll, player):
+        print(roll, "was rolled")
         for p in self.players:
             p.get_reward(roll, p == player)
 
     def get_remain(self):
-        return [b.quantity for b in self.buildList]
+        return [b.remain for b in self.buildList]
 
     def get_name_remain(self):
-        return [b.name+" "+str(b.quantity) for b in self.buildList]
+        return [b.name+" "+str(b.remain) for b in self.buildList]
 
 game = Game()
 game.play_game()
