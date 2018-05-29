@@ -60,20 +60,33 @@
 }
 .item-1{
 	background-color: blue;
+	height:80vh; 
+
 }
 
+.item-2{
+	background-color: orange;
+	/*width: 200px;*/	
+}
+
+
 .rotate-left{
+	position: absolute;
 	background-color: yellow;
     -ms-transform: rotate(20deg); /* IE 9 */
     -webkit-transform: rotate(20deg); /* Safari 3-8 */
     transform: rotate(-90deg);
+    right: -100px;
+    /*left: 0px;*/
     /*height: 200px;*/
 }
 .rotate-right{
+	position:absolute; 	
 	background-color: yellow;
     -ms-transform: rotate(20deg); /* IE 9 */
     -webkit-transform: rotate(20deg); /* Safari 3-8 */
     transform: rotate(90deg);
+    /*width:100px;*/
     /*height: 200px;*/
 }
 
