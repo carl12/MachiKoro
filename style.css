@@ -1,3 +1,79 @@
 .asdf {
 	color:blue;
 }
+.left-tray{
+    background-color: yellow;
+    -ms-transform: rotate(20deg); /* IE 9 */
+    -webkit-transform: rotate(20deg); /* Safari 3-8 */
+    transform: rotate(20deg);
+}
+
+.wrapper {
+    margin:0;
+    width:960px;
+    background:#EFEFEF;
+}
+
+.rotateObj {
+    height:150px;
+}
+
+.rotateObj h2 {
+	margin: 0;
+    position:relative;
+    float:left;
+    background:gray;
+    width:50px;
+    height:100%;
+    border-radius:5px;
+    -moz-border-radius:5px;
+}
+
+.rotateObj h2 span {
+    width:150px;
+    display:inline-block;
+    position:absolute;
+    left:-50px;
+    
+    line-height: 5em;
+    /*text-align: right;*/
+    -webkit-transform:rotate(-90deg);
+}
+
+.rotateObj h2.active {
+    background:green;
+}
+
+.rotateObj .content {
+    float:left;
+    width:250px;
+    height:100%;
+    padding:0 25px 0 25px;
+}
+
+/* Three columns: 100px each */
+.grid-container {
+    display: grid;
+    grid-template-columns: 1fr 3fr 1fr;
+    grid-gap: 20px;
+    /*height: 400px;*/
+}
+.item-1{
+	background-color: blue;
+}
+
+.rotate-left{
+	background-color: yellow;
+    -ms-transform: rotate(20deg); /* IE 9 */
+    -webkit-transform: rotate(20deg); /* Safari 3-8 */
+    transform: rotate(-90deg);
+    /*height: 200px;*/
+}
+.rotate-right{
+	background-color: yellow;
+    -ms-transform: rotate(20deg); /* IE 9 */
+    -webkit-transform: rotate(20deg); /* Safari 3-8 */
+    transform: rotate(90deg);
+    /*height: 200px;*/
+}
+
