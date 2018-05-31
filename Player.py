@@ -1,4 +1,5 @@
 import Cards
+import GameState
 
 class Player:
     def __init__(self, game, strat=1, name = None):
@@ -7,21 +8,23 @@ class Player:
         self.my_b = []
         self.strat = strat
 
-        self.name = name if name else strat
+        self.name = name if name else str(strat)
         self.landmarks = [Cards.Station(), Cards.ShoppingMall(), Cards.AmusementPark(), Cards.RadioTower()]
 
 
     def has_won(self):
         return not False in [a.owned for a in self.landmarks]
 
-    def get_reward(self, roll, is_turn):
+    def get_reward(self, roll, is_turn, turn_state):
         bonuses = {"Shopping Mall": self.landmarks[1].owned}
         for b in self.my_b:
             if b:
+                turn_state.card = b.name
                 reward = b.check(roll, is_turn, bonuses)
                 if reward:
                     print('Player:',self.name,'just got',reward)
                     self.money += reward
+                turn_state.card = None
         return self.money
 
     def buy(self, num):
@@ -88,3 +91,17 @@ class Player:
 
     def reroll(self, total, doubles = False):
         return True
+
+    def state(self):
+        counts = {b.name: self.my_b.count(b) for b in set(self.my_b)}
+
+        # Make sure different objects aren't present in my_b
+        return GameState.PlayerState(self.name,(self.strat==0),self.money,counts)
+
+
+class PlayerState:
+    def __init__(self, name, is_human, money, owned):
+        self.name = name
+        self.is_human = is_human
+        self.money = money
+        self.owned = owned

@@ -38,6 +38,17 @@ class TurnState:
         self.card = card
         self.pending_player = pending_player
 
+    def set_pre_roll(self, first_turn = True):
+        self.state = 0 if first_turn else 3
+
+    def set_resolving_roll(self,first_turn = True):
+        self.state = 1 if first_turn else 4
+
+    def set_buying(self,first_turn = True):
+        self.state = 2 if first_turn else 5
+
+
+
 
 
 class PlayerState:
@@ -63,5 +74,5 @@ if __name__ == '__main__':
 
     print(c.data)
     print(c.get_json())
-    
+
     # state = {'remain':[6,6,6,6],'turn_state':{'player_turn':0,'stage':0,'card':None,'pending_player':2},'roll':0,'players':[{'name':'steve','type':'human','money':3,'cards':{'Convenience Store':6,'Shopping Mall':1}}]}
