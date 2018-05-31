@@ -1,13 +1,15 @@
-
+body {
+	margin:0;
+}
 .grid-container {
     display: grid;
-    grid-template-columns: 1fr 1fr 6fr 2fr;
+    grid-template-columns: 1fr 1fr 6fr 1fr 1fr;
     grid-gap: 1px;
-    /*height: 400px;*/
+    
 }
 .item-1{
 	background-color: blue;
-	height:80vh; 
+	min-height:70vh; 
 
 }
 
@@ -49,5 +51,52 @@ div {
 .left-player-card{
 	max-width: 100%;
 	height: auto;
+}
+
+
+.right-player-card{
+	max-width: 100%;
+	height: auto;
+}
+
+.player-plate {
+	background-color: blue;
+	margin-top: 1px;
+	height: 30vh;
+
+}
+
+.rotated {
+	background-color: red;
+	width:30vh;
+	height: 6vh;
+    display:inline-block;
+    position:absolute;
+    left:-12vh;
+    padding: 0;
+    margin: 0;
+
+    margin-top: 12vh;
+    text-align: center;
+    
+    
+    /*line-height: 5em;*/
+    /*text-align: right;*/
+	-webkit-transform:rotate(-90deg);
+	border-radius: 10px;
+}
+
+.item-shifter{
+	float:left; 
+	width:6vh;
+}
+
+.player-card{
+	float:left;
+	margin-left: 10px;
+}
+
+.dice-panel{
+	float:right;
 }
 
