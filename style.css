@@ -58,11 +58,15 @@ div {
 	max-width: 100%;
 	height: auto;
 }
-
-.player-plate {
-	background-color: blue;
-	margin-top: 1px;
+.bottom-area{
 	height: 30vh;
+}
+.player-panel {
+	display: inline-block;
+	background-color: blue;
+	width: 85%;
+	margin-top: 1px;
+	height: inherit;
 
 }
 
@@ -87,6 +91,7 @@ div {
 }
 
 .item-shifter{
+	display: inline-block;
 	float:left; 
 	width:6vh;
 }
@@ -94,9 +99,14 @@ div {
 .player-card{
 	float:left;
 	margin-left: 10px;
+	background-color: green;
 }
 
 .dice-panel{
+	display: inline-block;
+	width:15%;
+	height: inherit;
 	float:right;
+	background-color: pink;
 }
 
