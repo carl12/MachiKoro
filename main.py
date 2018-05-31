@@ -20,8 +20,12 @@ class Handler(webapp2.RequestHandler):
     def render(self, template, **kw):
         self.write(self.render_str(template, **kw))
 
-
 class MainPage(Handler):
+	def get(self):
+		self.write('main menu!')
+
+
+class GamePage(Handler):
     def get(self):
         self.render("MachiKoro.html")
 
@@ -32,7 +36,8 @@ class MainPage(Handler):
 
 
 app = webapp2.WSGIApplication([
-    ('/', MainPage),
+    ('/', GamePage),
+    ('/mainmenu',MainPage)
 ], debug=True)
 
 
