@@ -8,6 +8,7 @@ class Card:
     cost = 0
     remain = 10
     public_card = True
+    is_interactive = False
 
     def buy(self):
         if self.remain > 0:
@@ -18,6 +19,9 @@ class Card:
         if (is_turn and self.on_turn) or (not is_turn and self.off_turn):
             if roll in self.trigger:
                 return self.get_reward(boosts)
+
+    def reward_times(self, number_owned):
+        return self.get_reward()
 
     def get_reward(self, boosts = None):
         return self.reward
@@ -72,6 +76,7 @@ class Cafe(FoodShop):
     reward = 1
     cost = 2
     remain = 6
+    is_interactive = True
 
 
 
@@ -119,3 +124,17 @@ class RadioTower(LandmarkCard):
     cost = 22
     remain = 1
     public_card = False
+
+
+super_classes = ('Card','FoodShop')
+g = locals().copy()
+card_dict = {}
+triggers=[[] for _ in range(13)]
+for key, val in g.items():
+    if type(val) is type and issubclass(val,Card) and key not in super_classes:
+        card_dict[key] = val
+        for t in val.trigger:
+            triggers[t].append(key)
+
+# print(card_dict)
+# print(triggers)

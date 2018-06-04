@@ -7,7 +7,7 @@ class GameState:
         - remain - array of remaining cards
         - turn_state - dict of components of game state
             - player_turn - who's turn
-            - stage - 0 pre roll, 1 resolving roll, 2 purchasing, 3, 4, 5 (for second turn using amusement park)
+            - stage - 0 rolling, 1 resolving roll, 2 purchasing, 3, 4, 5 (for second turn using amusement park)
             - card - (only for stage 1) which card is being resolved
             - player - which player is making decision about card reward (only for stage 1 when card requires choice)
         - roll - current roll
@@ -25,6 +25,9 @@ class GameState:
         self.players = players
         player_data = [p.__dict__ for p in players]
         self.data = {'remain':self.remain,'turn_state':turn_state.__dict__,'roll':roll,'players':player_data}
+
+    def p_has(self, num, card_name):
+        return card_name in self.players[num]
 
 
     def get_json(self):
