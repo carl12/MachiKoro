@@ -54,10 +54,13 @@ class GameStep:
                                     pending = self.game_state.players.index(p)
                                     self.turn_state.pending_player = pending
                                 else:
+                                    pass
                                     # ai picks person to steal from
             else:
+                pass
+
                 # resume above process from card where left off
-            
+
             #probably return here because we need to ask for buy
 
         if self.turn_state in [2,5]:
