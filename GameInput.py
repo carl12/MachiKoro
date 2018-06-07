@@ -16,8 +16,15 @@ class GameStep:
         curr_stage = self.turn_state.stage
         self.turn_state.stage += 1
 
+    def player_turn_is_ai(self):
+        self.game_state.players[self.turn_state.player_turn].is_human
+        return
 
-    def step_game_state(self):
+
+
+
+
+    def step_game_state(self, input):
         p_turn = self.turn_state.player_turn
         turn_stage = self.turn_state.stage
         request = ''
@@ -41,7 +48,6 @@ class GameStep:
                     # Check if players have said card
                     for p in self.game_state.players:
                         if name in p.owned.keys():
-
                             if not card.is_interactive:
                                 # If card does not require input collect rewards
                                 quantity = p.owned[name]
@@ -58,10 +64,9 @@ class GameStep:
                                     # ai picks person to steal from
             else:
                 pass
-
                 # resume above process from card where left off
 
-            #probably return here because we need to ask for buy
+            # return if on human player here because we need to ask for buy
 
         if self.turn_state in [2,5]:
             # make sure input is a valid buy
@@ -72,20 +77,49 @@ class GameStep:
             # Otherwise start next player's turn
 
 
+    def roll_stage(self, input):
+        self.game_state.roll = self.input['roll']
+        if self.turn_state.card is None and self.game_state.p_has(p_turn, "Amusement Park"):
+            self.turn_state.card = 'Amusement Park'
+            request = 're-roll'
+            return self.game_state, request
+        else:
+            self.next_stage()
 
+    def reward_stage(self):
+        if self.turn_state.card is None:
+            # give out rewards
+            roll_sum = sum(self.game_state.roll)
+            triggered = Cards.triggers[roll_sum]
+            # for each triggered card
+            for name in triggered:
+                card = Cards.card_dict[name]()
+                # Check if players have said card
+                for p in self.game_state.players:
+                    if name in p.owned.keys():
+                        if not card.is_interactive:
+                            # If card does not require input collect rewards
+                            quantity = p.owned[name]
+                            p.money += quantity * card.reward
+                        else:
+                            # Otherwise send request to human or ask ai
+                            if p.is_human:
+                                self.turn_state.stage = 1
+                                self.turn_state.card = name
+                                pending = self.game_state.players.index(p)
+                                self.turn_state.pending_player = pending
+                            else:
+                                pass
+                                # ai picks person to steal from
+        else:
+            pass
+            # resume above process from card where left off
 
+            # return if on human player here because we need to ask for buy
+        self.next_stage()
 
-
-
-
-
-
-
-
-
-
-
-
+    def buy_stage(self):
+        pass
 
     def roll(self, input):
 
